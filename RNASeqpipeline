@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+SECONDS=0
+
+# change working direcotry
+cd ~/Desktop/test
+
+# STEP 1: Run fastqc
+#fastqc data/demo.fastq -o data/
+
+# Run trimmomatic to trim reads with poor quality
+# http://www.usadellab.org/cms/?page=trimmomatic (save the binary file in a folder and give the path in the following form)
+#java -jar ~/Desktop/test/tools/Trimmomatic-0.39/trimmomatic-0.39.jar SE -threads 4 data/demo.fastq data/demo_trimmed.fastq TRAILING:10 -phred33
+#echo "Trimmomatic finished running!"
+
+#fastqc data/demo_trimmed.fastq -o data/
+
+# STEP 2: Run HISAT2
+mkdir HISAT2
+# get the genome indices
+# wget https://genome-idx.s3.amazonaws.com/hisat/grch38_genome.tar.gz
+
+# run alignment
+#hisat2 -q --rna-strandness R -x HISAT2/grch38/genome -U 
+#data/demo_trimmed.fastq | samtools sort -o HISAT2/demo_trimmed.bam
+
+echo "hisat2 finished running!"
+
+# STEP 3: Rna featureCounts - Quantification (tells if a read is mapped to a gene)
+# https://uswest.ensembl.org/index.html
+
+#wget https://ftp.ensembl.org/pub/release-108/gtf/homo_sapiens/Homo_sapiens.GRCh38.108.gtf.gz
+mkdir quants2
+featureCounts -S 2 -a Homo_sapiens.GRCh38.108.gtf -o quants2/demo_featurecounts.txt HISAT2/demo_trimmed.bam
+echo "featureCounts finished running!"
+
+duration=$SECONDS
+echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
