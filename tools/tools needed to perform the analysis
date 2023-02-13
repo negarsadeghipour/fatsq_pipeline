@@ -1,0 +1,5 @@
+# tools needed to perform the analysis
+## hisat2-2.2.1
+## subread
+## Trimmomatic-0.39
+## Homo_sapiens.GRCh38.108.gtf
